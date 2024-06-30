@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+
+import { Box, Container, useMediaQuery } from '@mui/material';
+
+import LogoBox from './Components/LogoBox/LogoBox';
+import RASearchBox from './Components/SearchBox/RASearchBox';
+import RABookmarks from './Components/Bookmarks/RABookmarks';
+import { makeStyles } from '@mui/styles';
+
+
+const useStyle = makeStyles((theme)=>({
+    app:{
+        textAlign:"center",
+    },
+}));
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const isMobile = useMediaQuery('(max-width:600px)');
+    const classes = useStyle();
+    return (
+        <Container className='App' maxWidth="lg" style={{ marginTop: '20px',height: '100vh' }}>
+            <LogoBox></LogoBox>
+            <RASearchBox></RASearchBox>
+            <RABookmarks></RABookmarks>
+        </Container>
+    );
 }
 
 export default App;
