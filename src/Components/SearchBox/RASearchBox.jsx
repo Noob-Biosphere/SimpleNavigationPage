@@ -69,6 +69,8 @@ const getSearchEngine = (index) => {
     return RASearchEngines[0] ?? null;
 }
 
+const getSearchEngineCount = ()=> RASearchEngines.length ?? 0;
+
 const SearchEngineSelector = (props) => {
     const classes = useStyles();
     return (
@@ -78,7 +80,8 @@ const SearchEngineSelector = (props) => {
                 displayEmpty={true}
                 variant='filled'
                 // disableUnderline={true}
-                defaultValue={0}
+                defaultValue={props.defaultValue ?? 0}
+                value = {props.value}
                 onChange={(event) => {
                     if (props.onSelectChange) {
                         props.onSelectChange(event.target.value);
@@ -86,7 +89,10 @@ const SearchEngineSelector = (props) => {
                 }}>
                 {
                     props.searchEngineList.map((value, index) => {
-                        return <MenuItem key={value.name} value={index} className={classes.searchEngineSelectorItem}>
+                        return <MenuItem
+                            key={value.name}
+                            value={index}
+                            className={classes.searchEngineSelectorItem}>
                             <Avatar
                                 src={value.icon}
                                 variant="square"
@@ -99,6 +105,7 @@ const SearchEngineSelector = (props) => {
     );
 };
 
+
 const RASearchBox = () => {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
@@ -106,9 +113,23 @@ const RASearchBox = () => {
     const [autoCompleteValue, setAutoCompleteValue] = useState('');
     const [inputValue, setInputValue] = useState('');
 
-    const [searchEngineIndex, setSearchEngineIndex] = useState(0);
+
+    const getSearchEngineIndex = () => {
+        const savedEngineIndex = localStorage.getItem("RASearchEngineIndex");
+        return savedEngineIndex ? parseInt(savedEngineIndex) : 0;
+    }
+
+    const [searchEngineIndex, setSearchEngineIndex] = useState(getSearchEngineIndex);
 
     const classes = useStyles();
+
+
+    let defaultSelectValue = -1;
+
+    useEffect(() => {
+        localStorage.setItem("RASearchEngineIndex", searchEngineIndex);
+    }, [searchEngineIndex]);
+
 
     useEffect(() => {
         setLoading(true);
@@ -129,6 +150,7 @@ const RASearchBox = () => {
         }, 221);
         return () => clearTimeout(getData);
     }, [inputValue]);
+
 
 
     const handleInputChange = async (event, value, reason) => {
@@ -152,6 +174,13 @@ const RASearchBox = () => {
         }
     }
 
+    const handleKeyDown = (event)=>{
+        if(event.code == "Tab"){
+            event.preventDefault();
+            setSearchEngineIndex(searchEngineIndex < getSearchEngineCount() - 1 ? searchEngineIndex + 1 : 0);
+        }
+    }
+
     const openNewPage = (url) => {
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
         if (newWindow) {
@@ -164,6 +193,8 @@ const RASearchBox = () => {
             <SearchEngineSelector
                 className={classes.SearchEngineSelector}
                 searchEngineList={RASearchEngines}
+                defaultValue={defaultSelectValue < 0 ? () => { defaultSelectValue = getSearchEngineIndex(); return defaultSelectValue; } : defaultSelectValue}
+                value = {searchEngineIndex}
                 onSelectChange={(index) => setSearchEngineIndex(index)
                 } />
             <Autocomplete
@@ -176,7 +207,7 @@ const RASearchBox = () => {
                 inputValue={inputValue || ""}
                 onOpen={() => setOpen(true)}
                 onClose={() => setOpen(false)}
-                getOptionSelected={(option, value) => option === value}
+                isOptionEqualToValue = {(option, value) => option === value}
                 getOptionLabel={(option) => option}
                 options={options}
                 // loading={loading}
@@ -185,6 +216,7 @@ const RASearchBox = () => {
                 disableCloseOnSelect={true}
                 onChange={handleOnChange}
                 onInputChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 filterOptions={(options, state) => options}
                 renderInput={(params) => (
                     <TextField

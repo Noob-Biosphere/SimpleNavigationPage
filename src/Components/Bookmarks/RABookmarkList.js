@@ -61,7 +61,6 @@ const RABookmarkList = observable({
                             objectA.push(topSite);
                         });
                         this.isLoading = false;
-                        console.log(objectA)
                         this.allBookMarks = objectA;
                     });
             })

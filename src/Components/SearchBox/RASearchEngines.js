@@ -1,14 +1,12 @@
 import fetchJsonp from 'fetch-jsonp';
-import baiduIcon from "./icon/baidu_favicon.ico";
-import googleIcon from "./icon/google_favicon.ico";
+import IconConfig from './icon/IconConfig';
 
 const RASearchEngines = [
     {
         "name":"Baidu",
         "placeholder":"使用百度搜索",
-        "icon": baiduIcon,
+        "icon": IconConfig.baidu,
         "suggester": function(keyword){
-            console.log(baiduIcon);
             const url = `//suggestion.baidu.com/su?wd=${keyword}&cb=window.baidu.sug`;
             return (fetchJsonp(url, { jsonpCallback: "cb"}).then((res) => {
                 return res.json();
@@ -26,7 +24,7 @@ const RASearchEngines = [
     },
     {
         "name":"Google",
-        "icon":googleIcon,
+        "icon":IconConfig.google,
         "placeholder":"使用Google搜索",
         "suggester": function(keyword){
             const url = `//suggestqueries.google.com/complete/search?client=firefox&q=${keyword}&callback=searchHandler`;
