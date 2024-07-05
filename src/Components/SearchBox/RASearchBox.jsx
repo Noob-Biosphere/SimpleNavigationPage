@@ -69,7 +69,7 @@ const getSearchEngine = (index) => {
     return RASearchEngines[0] ?? null;
 }
 
-const getSearchEngineCount = ()=> RASearchEngines.length ?? 0;
+const getSearchEngineCount = () => RASearchEngines.length ?? 0;
 
 const SearchEngineSelector = (props) => {
     const classes = useStyles();
@@ -81,7 +81,7 @@ const SearchEngineSelector = (props) => {
                 variant='filled'
                 // disableUnderline={true}
                 defaultValue={props.defaultValue ?? 0}
-                value = {props.value}
+                value={props.value}
                 onChange={(event) => {
                     if (props.onSelectChange) {
                         props.onSelectChange(event.target.value);
@@ -139,6 +139,7 @@ const RASearchBox = () => {
                 setOptions([]);
                 return;
             }
+
             setLoading(true);
 
             await getSearchEngine(searchEngineIndex).suggester(inputValue).then(result => {
@@ -147,9 +148,9 @@ const RASearchBox = () => {
                 console.log(e);
                 setOptions([]);
             }).finally(setLoading(false));
-        }, 221);
+        }, 100);
         return () => clearTimeout(getData);
-    }, [inputValue]);
+    }, [inputValue, searchEngineIndex]);
 
 
 
@@ -174,8 +175,8 @@ const RASearchBox = () => {
         }
     }
 
-    const handleKeyDown = (event)=>{
-        if(event.code == "Tab"){
+    const handleKeyDown = (event) => {
+        if (event.code == "Tab") {
             event.preventDefault();
             setSearchEngineIndex(searchEngineIndex < getSearchEngineCount() - 1 ? searchEngineIndex + 1 : 0);
         }
@@ -194,7 +195,7 @@ const RASearchBox = () => {
                 className={classes.SearchEngineSelector}
                 searchEngineList={RASearchEngines}
                 defaultValue={defaultSelectValue < 0 ? () => { defaultSelectValue = getSearchEngineIndex(); return defaultSelectValue; } : defaultSelectValue}
-                value = {searchEngineIndex}
+                value={searchEngineIndex}
                 onSelectChange={(index) => setSearchEngineIndex(index)
                 } />
             <Autocomplete
@@ -207,10 +208,11 @@ const RASearchBox = () => {
                 inputValue={inputValue || ""}
                 onOpen={() => setOpen(true)}
                 onClose={() => setOpen(false)}
-                isOptionEqualToValue = {(option, value) => option === value}
+                isOptionEqualToValue={(option, value) => option === value}
                 getOptionLabel={(option) => option}
                 options={options}
                 // loading={loading}
+                // loadingText={"正在获取..."}
                 freeSolo={true}
                 disableClearable={false}
                 disableCloseOnSelect={true}
@@ -228,19 +230,19 @@ const RASearchBox = () => {
                         }}
                         InputProps={{
                             ...params.InputProps,
-                            // startAdornment:(
+                            // startAdornment: (
                             //     <React.Fragment>
-
+                            //         {loading ? (
+                            //             <CircularProgress color="inherit" size={18} />
+                            //         ) : null}
+                            //         {params.InputProps.endAdornment}
                             //     </React.Fragment>
                             // ),
-                            endAdornment: (
-                                <React.Fragment>
-                                    {loading ? (
-                                        <CircularProgress color="inherit" size={20} />
-                                    ) : null}
-                                    {params.InputProps.endAdornment}
-                                </React.Fragment>
-                            ),
+                            // endAdornment: (
+                            //     <React.Fragment>
+                            //        
+                            //     </React.Fragment>
+                            // ),
                         }}
                     />
                 )}
