@@ -7,7 +7,7 @@ const RASearchEngines = [
         "placeholder":"使用百度搜索",
         "icon": IconConfig.baidu,
         "suggester": function(keyword){
-            const url = `//suggestion.baidu.com/su?wd=${keyword}&cb=window.baidu.sug`;
+            const url = `//suggestion.baidu.com/su?wd=${keyword}`;
             return (fetchJsonp(url, { jsonpCallback: "cb"}).then((res) => {
                 return res.json();
             }).catch(e => {
