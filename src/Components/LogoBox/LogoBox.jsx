@@ -2,7 +2,7 @@ import { Box, Container, useMediaQuery } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Image from 'mui-image';
 
-import LogoImage from "./images/logo_sample.png";
+import LogoImage from "./images/logo_flower.png";
 
 const useStyle = makeStyles((theme) => ({
 
