@@ -32,6 +32,7 @@ const RABookmarkList = observable({
                                         "url": theChild.link,
                                         "logo": theChild.icon != null && theChild.icon.length > 0 ? theChild.icon : theChild.icon_third,
                                         "bgColor": "rgba(241, 243, 244, 1)",
+                                        "iframe": theChild.iframe && theChild.iframe.length > 0,
                                         "bookmarks": []
                                     };
                                     theChildrensParse.push(nowChild);
@@ -44,6 +45,7 @@ const RABookmarkList = observable({
                                     "url": element.link,
                                     "logo": "",
                                     "bgColor": "rgba(241, 243, 244, 1)",
+                                    "iframe": false,
                                     "bookmarks": theChildrensParse
                                 };
 
@@ -59,6 +61,7 @@ const RABookmarkList = observable({
                                     "url": element.link,
                                     "logo": element.icon != null && element.icon.length > 0 ? element.icon : element.icon_third,
                                     "bgColor": "rgba(241, 243, 244, 1)",
+                                    "iframe": element.iframe && element.iframe.length > 0,
                                     "bookmarks": []
                                 };
                                 objectA.push(topSite);
@@ -95,6 +98,7 @@ const RABookmarkList = observable({
                                             "url": theChild.link,
                                             "logo": theChild.icon != null && theChild.icon.length > 0 ? theChild.icon : theChild.icon_third,
                                             "bgColor": "rgba(241, 243, 244, 1)",
+                                            "iframe": theChild.iframe && theChild.iframe.length > 0,
                                             "bookmarks": []
                                         };
                                         theChildrensParse.push(nowChild);
@@ -106,6 +110,7 @@ const RABookmarkList = observable({
                                         "url": element.link,
                                         "logo": "",
                                         "bgColor": "rgba(241, 243, 244, 1)",
+                                        "iframe":false,
                                         "bookmarks": theChildrensParse
                                     };
                                     objectA.push(theDir);
@@ -120,6 +125,7 @@ const RABookmarkList = observable({
                                         "url": element.link,
                                         "logo": element.icon != null && element.icon.length > 0 ? element.icon : element.icon_third,
                                         "bgColor": "rgba(241, 243, 244, 1)",
+                                        "iframe": element.iframe && element.iframe.length > 0,
                                         "bookmarks": []
                                     };
                                     objectA.push(topSite);

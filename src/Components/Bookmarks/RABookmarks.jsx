@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import RABookmarkList from './RABookmarkList';
 import { observer } from 'mobx-react';
 import LinkIcon from '@mui/icons-material/Link';
+import WebIcon from '@mui/icons-material/Web';
 import Image from 'mui-image';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,12 +47,12 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: "5px",
-        overflow:"hidden",
+        overflow: "hidden",
     },
     bookmarkIcon: {
         width: "40px !important",
         height: "40px !important",
-        borderRadius:"5px !important"
+        borderRadius: "5px !important"
 
     },
     bookmarkTitle: {
@@ -77,6 +78,25 @@ const useStyles = makeStyles((theme) => ({
         //  margin: '0 auto',
         padding: '8',
     },
+    dialogIframeContent:{
+        boxSizing: "border-box",
+        maxWidth: '100%',
+        width: '100%',
+        //  margin: '0 auto',
+        padding: '0 !important',
+        overflowY:"hidden !important",
+        borderBottom:"0 !important"
+    },
+
+    dialogIframeItem:{
+        width:"100%",
+        height:"100%",
+        minHeight:"500px",
+        border:'0',
+        margin:'0',
+        overflow:"hidden"
+    },
+
     dialogTitleLayout: {
         display: 'flex',
         justifyContent: 'space-between',
@@ -98,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const BookmarkDialog = ({ open, onClose, folder }) => {
+const BookmarkDialog = ({ open, onItemClick, onClose, folder }) => {
 
     const classes = useStyles();
     return (
@@ -120,7 +140,7 @@ const BookmarkDialog = ({ open, onClose, folder }) => {
                         <Grid item xs={3} sm={3} md={2} lg={2} key={bookmark.id}>
                             <Paper
                                 className={classes.bookmark}
-                                onClick={() => window.open(bookmark.url, '_blank')}
+                                onClick={() => onItemClick(bookmark)}
                             >
                                 <Box className={classes.bookmarkBox}>
                                     {
@@ -128,7 +148,7 @@ const BookmarkDialog = ({ open, onClose, folder }) => {
                                             <Image
                                                 src={bookmark.logo}
                                                 className={classes.bookmarkIcon}
-                                                duration = {500}
+                                                duration={500}
                                             >
                                             </Image>
                                             : <LinkIcon className={classes.bookmarkIcon}></LinkIcon>
@@ -148,11 +168,39 @@ const BookmarkDialog = ({ open, onClose, folder }) => {
     );
 }
 
+const BookmarkIframeDialog = ({ open, onClose, bookmark }) => {
+
+    const classes = useStyles();
+    return (
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth className={classes.dialog}>
+            <DialogTitle component={"h5"} className={classes.dialogTitle}>
+                <div className={classes.dialogTitleLayout}>
+                    <WebIcon className={classes.dialogTitleIcon} />
+                    <Typography variant="h6" className={classes.dialogTitleText}>
+                        {bookmark.title}
+                    </Typography>
+                    <IconButton onClick={onClose} color="inherit">
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+            </DialogTitle>
+            <DialogContent dividers className={classes.dialogIframeContent}>
+            <iframe className={classes.dialogIframeItem} src={bookmark.url}></iframe>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+
+
 
 const RABookmarks = observer((props) => {
 
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedFolder, setSelectedFolder] = useState(null);
+
+    const [openIframe,setOpenIframe] = useState(false);
+    const [selectedIframe,setSelectedIframe] = useState(null);
 
     const handleFolderClick = (folder) => {
         setSelectedFolder(folder);
@@ -163,6 +211,35 @@ const RABookmarks = observer((props) => {
         setOpenDialog(false);
         setSelectedFolder(null);
     };
+
+    const handleIframeDialogClick = (bookmark)=>{
+        setSelectedIframe(bookmark);
+        setOpenIframe(true);
+    };
+
+    const handleIframeDialogClose = ()=>{
+        setOpenIframe(false);
+        setSelectedIframe(null);
+
+    };
+
+    const handleSiteClick = (bookmark) => {
+
+        if (bookmark.iframe) {
+            handleIframeDialogClick(bookmark);
+        } else {
+            window.open(bookmark.url, '_blank');
+        }
+    };
+
+    const handleItemOnClick =(bookmark) =>{
+        console.log(bookmark);
+        if(bookmark.type === 'folder'){
+            handleFolderClick(bookmark);
+        }else{
+            handleSiteClick(bookmark);
+        }
+    }
 
     useEffect(() => {
 
@@ -182,7 +259,7 @@ const RABookmarks = observer((props) => {
                             <Grid item xs={3} sm={3} md={2} lg={2} key={bookmark.id}>
                                 <Paper
                                     className={classes.bookmark}
-                                    onClick={() => bookmark.type === 'folder' ? handleFolderClick(bookmark) : window.open(bookmark.url, '_blank')}
+                                    onClick={()=>handleItemOnClick(bookmark)}
                                 >   <Box className={classes.bookmarkBox}>
                                         {bookmark.type === 'folder' ? (
                                             <FolderIcon className={classes.bookmarkIcon} />
@@ -191,7 +268,7 @@ const RABookmarks = observer((props) => {
                                                 <Image
                                                     src={bookmark.logo}
                                                     className={classes.bookmarkIcon}
-                                                    duration = {500}
+                                                    duration={500}
                                                 >
                                                 </Image>
                                                 : <LinkIcon className={classes.bookmarkIcon}></LinkIcon>
@@ -205,7 +282,8 @@ const RABookmarks = observer((props) => {
                         : <React.Fragment></React.Fragment>
                 }
             </Grid>
-            {selectedFolder && <BookmarkDialog open={openDialog} onClose={handleDialogClose} folder={selectedFolder} />}
+            {selectedFolder && <BookmarkDialog open={openDialog} onItemClick={handleItemOnClick} onClose={handleDialogClose} folder={selectedFolder} />}
+            {selectedIframe && <BookmarkIframeDialog open={openIframe} onClose={handleIframeDialogClose} bookmark={selectedIframe}></BookmarkIframeDialog>}
         </Box>
     )
 });
