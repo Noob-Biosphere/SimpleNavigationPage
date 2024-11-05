@@ -66,6 +66,16 @@ const useStyles = makeStyles((theme) => ({
 
     },
 
+    dialogIframePanel:{
+        position: 'absolute',
+        margin:"auto",
+        transform: 'translate(-50%, -50%)',
+        left: "50%",
+        top: " 50%",
+        width:"50%",
+        zIndex:"3",
+    },
+
     dialogTitle: {
         padding: '0.2em 0.2em 0.2em 0.5em !important',
 
@@ -78,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
         //  margin: '0 auto',
         padding: '8',
     },
+
     dialogIframeContent:{
         boxSizing: "border-box",
         maxWidth: '100%',
@@ -88,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
         borderBottom:"0 !important"
     },
 
-    dialogIframeItem:{
+    dialogIframeDom:{
         width:"100%",
         height:"100%",
         minHeight:"500px",
@@ -172,7 +183,7 @@ const BookmarkIframeDialog = ({ open, onClose, bookmark }) => {
 
     const classes = useStyles();
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth className={classes.dialog}>
+        <Paper open={open} onClose={onClose} maxWidth="md" fullWidth className={classes.dialogIframePanel}>
             <DialogTitle component={"h5"} className={classes.dialogTitle}>
                 <div className={classes.dialogTitleLayout}>
                     <WebIcon className={classes.dialogTitleIcon} />
@@ -185,9 +196,9 @@ const BookmarkIframeDialog = ({ open, onClose, bookmark }) => {
                 </div>
             </DialogTitle>
             <DialogContent dividers className={classes.dialogIframeContent}>
-            <iframe className={classes.dialogIframeItem} src={bookmark.url}></iframe>
+            <iframe className={classes.dialogIframeDom} src={bookmark.url}></iframe>
             </DialogContent>
-        </Dialog>
+        </Paper>
     );
 }
 
@@ -215,6 +226,7 @@ const RABookmarks = observer((props) => {
     const handleIframeDialogClick = (bookmark)=>{
         setSelectedIframe(bookmark);
         setOpenIframe(true);
+        handleDialogClose();
     };
 
     const handleIframeDialogClose = ()=>{
