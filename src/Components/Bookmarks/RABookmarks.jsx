@@ -105,7 +105,8 @@ const useStyles = makeStyles((theme) => ({
         minHeight:"500px",
         border:'0',
         margin:'0',
-        overflow:"hidden"
+        overflow:"hidden",
+        display:"block"
     },
 
     dialogTitleLayout: {
