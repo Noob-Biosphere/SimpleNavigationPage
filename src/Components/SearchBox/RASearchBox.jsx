@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import fetchJsonp from 'fetch-jsonp';
-import { TextField, Autocomplete, CircularProgress, Box, Select, MenuItem, Avatar, OutlinedInput } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { TextField, Autocomplete, Box, Select, MenuItem, Avatar } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import RASearchEngines from './RASearchEngines';
 
@@ -185,7 +184,7 @@ const RASearchBox = () => {
     const openNewPage = (url) => {
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
         if (newWindow) {
-            { newWindow.opener = null; }
+            newWindow.opener = null; 
         }
     }
 
