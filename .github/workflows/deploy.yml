@@ -19,6 +19,8 @@ jobs:
         node-version: '22'  # 根据你的项目选择 Node 版本
 
     - name: Install dependencies
+      env:
+        CI: ""
       run: |
         if [ -f yarn.lock ]; then
           yarn install
@@ -27,6 +29,8 @@ jobs:
         fi
 
     - name: Build project
+      env:
+        CI: ""
       run: |
         if [ -f yarn.lock ]; then
           yarn build
