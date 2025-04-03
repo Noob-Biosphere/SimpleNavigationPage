@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - main  # 设置要触发该流程的分支
+      - master  # 设置要触发该流程的分支
 
 jobs:
   build-and-deploy:
