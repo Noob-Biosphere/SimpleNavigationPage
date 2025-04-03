@@ -1,0 +1,61 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main  # 设置要触发该流程的分支
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'  # 根据你的项目选择 Node 版本
+
+    - name: Install dependencies
+      run: |
+        if [ -f yarn.lock ]; then
+          yarn install
+        else
+          npm install
+        fi
+
+    - name: Build project
+      run: |
+        if [ -f yarn.lock ]; then
+          yarn build
+        else
+          npm run build
+        fi
+
+    - name: Init SSH
+      env:
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        SERVER_USER: ${{ secrets.SERVER_USER }}
+        SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+      run: |
+        # 创建 SSH 目录并设置权限
+        mkdir -p ~/.ssh
+        echo "$SERVER_SSH_KEY" > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+
+        # 添加服务器到 known_hosts 以防止提示
+        ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts
+          
+    - name: Upload build to server
+      env:
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        SERVER_USER: ${{ secrets.SERVER_USER }}
+        SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+      run: |
+        # 使用 rsync 上传文件
+         rsync -av -e "ssh -i ~/.ssh/deploy_key" build/ "$SERVER_USER@$SERVER_HOST:/www/nav.acgame.fun/"
+
+    - name: Clean up
+      run: rm -f ~/.ssh/deploy_key

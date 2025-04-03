@@ -1,4 +1,4 @@
-import { Box, Container, useMediaQuery } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Image from 'mui-image';
 
